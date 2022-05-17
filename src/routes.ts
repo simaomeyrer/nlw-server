@@ -15,12 +15,15 @@ routes.post("/feedbacks", async (req, res) => {
     prismaFeedbackRepository,
     nodemailerMailAdapter
   )
+  try {
+    await submitFeedbackUseCase.execute({
+      type,
+      comment,
+      screenshot,
+    })
 
-  await submitFeedbackUseCase.execute({
-    type,
-    comment,
-    screenshot,
-  })
-
-  return res.status(201).send()
+    return res.status(201).send()
+  } catch (error: any) {
+    return res.status(400).send(error.message)
+  }
 })
